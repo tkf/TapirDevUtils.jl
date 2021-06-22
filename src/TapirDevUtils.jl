@@ -1,6 +1,6 @@
 module TapirDevUtils
 
-export ci_tapir, @ci_tapir
+export ci_tapir, @ci_tapir, newworld_compiler
 
 using InteractiveUtils: code_typed, gen_call_with_extracted_types_and_kwargs
 
@@ -15,5 +15,17 @@ end
 macro ci_tapir(args...)
     gen_call_with_extracted_types_and_kwargs(__module__, ci_tapir, args)
 end
+
+"""
+    newworld_compiler()
+
+Use Revised `Core.Compiler` for real compilation (execution).
+
+It just calls:
+
+    ccall(:jl_set_typeinf_func, Cvoid, (Any,), Core.Compiler.typeinf_ext_toplevel)
+"""
+newworld_compiler() =
+    ccall(:jl_set_typeinf_func, Cvoid, (Any,), Core.Compiler.typeinf_ext_toplevel)
 
 end
