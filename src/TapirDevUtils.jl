@@ -1,6 +1,6 @@
 module TapirDevUtils
 
-export ci_tapir, @ci_tapir, newworld_compiler
+export ci_tapir, @ci_tapir, ircode_tapir, @ircode_tapir, newworld_compiler
 
 using InteractiveUtils: code_typed, gen_call_with_extracted_types_and_kwargs
 
@@ -14,6 +14,18 @@ end
 
 macro ci_tapir(args...)
     gen_call_with_extracted_types_and_kwargs(__module__, ci_tapir, args)
+end
+
+function ircode_tapir(f, types)
+    @nospecialize
+    (ci,), = code_typed(f, types)
+    mch = Base._which(Base.tuple_type_cons(typeof(f), types))
+    mi = Core.Compiler.specialize_method(mch.method, mch.spec_types, mch.sparams)
+    return Core.Compiler.lower_tapir_to_ircode(mi, ci)
+end
+
+macro ircode_tapir(args...)
+    gen_call_with_extracted_types_and_kwargs(__module__, ircode_tapir, args)
 end
 
 """
