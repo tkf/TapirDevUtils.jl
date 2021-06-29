@@ -12,6 +12,13 @@ function ci_tapir(f, types)
     return Core.Compiler.lower_tapir(mi, ci)
 end
 
+"""
+    @ci_tapir f(args...)
+
+Get `CodeInfo` after processed for lowering to Tapir. This is the actual
+`CodeInfo` compiled to LLVM (while `@code_typed` still includes Tapir
+constructs.)
+"""
 macro ci_tapir(args...)
     gen_call_with_extracted_types_and_kwargs(__module__, ci_tapir, args)
 end
@@ -24,6 +31,11 @@ function ircode_tapir(f, types)
     return Core.Compiler.lower_tapir_to_ircode(mi, ci)
 end
 
+"""
+    @ircode_tapir f(args...)
+
+Get `IRCode` after processed for lowering to Tapir.
+"""
 macro ircode_tapir(args...)
     gen_call_with_extracted_types_and_kwargs(__module__, ircode_tapir, args)
 end
