@@ -52,4 +52,37 @@ It just calls:
 newworld_compiler() =
     ccall(:jl_set_typeinf_func, Cvoid, (Any,), Core.Compiler.typeinf_ext_toplevel)
 
+"""
+    UnsafeTapir
+
+A namespace that provides Tapir-like API but with simpler but more "unsafe" code
+(e.g., no exception handling).  Useful for debugging IR.
+
+Usage:
+    using TapirDevUtils: UnsafeTapir as Tapir
+"""
+module UnsafeTapir
+using Base.Experimental: Tapir
+
+const tokenname = gensym(:token)
+
+macro spawn(block)
+    var = esc(tokenname)
+    block = Expr(:block, __source__, block)
+    :(Tapir.@spawnin $var $(esc(block)))
+end
+
+macro sync(block)
+    var = esc(tokenname)
+    block = Expr(:block, __source__, block)
+    quote
+        let $var = Tapir.@syncregion(), ans = $(esc(block))
+            Tapir.@sync_end($var)
+            ans
+        end
+    end
+end
+
+end # module UnsafeTapir
+
 end
