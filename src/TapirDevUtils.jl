@@ -85,4 +85,20 @@ end
 
 end # module UnsafeTapir
 
+const Requires = try
+    Base.require(Base.PkgId(Base.UUID(0xae029012a4dd51049daad747884805df), "Requires"))
+catch
+    nothing
+end
+
+@static if Requires isa Module
+    using .Requires: @require
+end
+
+@static if Requires isa Module
+    function __init__()
+        @require Cthulhu = "f68482b8-f384-11e8-15f7-abe071a5a75f" include("cthulhu.jl")
+    end
+end
+
 end
