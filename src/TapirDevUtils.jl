@@ -1,8 +1,22 @@
 module TapirDevUtils
 
-export ci_tapir, @ci_tapir, ircode_tapir, @ircode_tapir, newworld_compiler
+export @ci_tapir,
+    @ircode_tapir,
+    child_task_info,
+    ci_child_tasks,
+    ci_tapir,
+    ircode_child_tasks,
+    ircode_tapir,
+    newworld_compiler
 
-using InteractiveUtils: code_typed, gen_call_with_extracted_types_and_kwargs
+using InteractiveUtils:
+    InteractiveUtils, code_typed, gen_call_with_extracted_types_and_kwargs
+
+try
+    include("unstable.jl")
+catch err
+    @error "Cannot import unstable API" exception = (err, catch_backtrace())
+end
 
 function ci_tapir(f, types)
     @nospecialize
