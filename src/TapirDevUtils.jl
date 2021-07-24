@@ -78,6 +78,11 @@ Usage:
 module UnsafeTapir
 using Base.Experimental: Tapir
 
+try
+    using Base.Experimental.Tapir: @output
+catch
+end
+
 const tokenname = gensym(:token)
 
 macro spawn(block)
